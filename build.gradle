@@ -1,0 +1,68 @@
+group 'de.sebdas'
+version '1.0-SNAPSHOT'
+
+wrapper.gradleVersion = '4.6'
+
+ext {
+    junit4Version        = '4.12'
+    junit5Version        = '5.1.1'
+    junitPlatformVersion = '1.1.1'
+    mockitoVersion       = '2.18.3'
+    assertjVersion       = '3.9.0'
+    testfxVersion        = '4.0.13-alpha'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: '1.1.1'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'org.junit.jupiter',  name: 'junit-jupiter-api',     version: junit5Version
+    testCompile group: 'org.junit.jupiter',  name: 'junit-jupiter-params',  version: junit5Version
+    testRuntime group: 'org.junit.jupiter',  name: 'junit-jupiter-engine',  version: junit5Version
+
+    testCompile group: 'junit',              name: 'junit',                 version: junit4Version
+    testRuntime group: 'org.junit.vintage',  name: 'junit-vintage-engine',  version: junit5Version
+
+    testRuntime group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
+
+    testCompile group: 'org.assertj',        name: 'assertj-core',          version: assertjVersion
+    testCompile group: 'org.mockito',        name: 'mockito-core',          version: mockitoVersion
+    testCompile group: 'org.mockito',        name: 'mockito-junit-jupiter', version: mockitoVersion
+
+    testCompile group: 'org.testfx',         name: 'testfx-core',           version: testfxVersion
+    testCompile group: 'org.testfx',         name: 'testfx-junit',          version: testfxVersion
+    testCompile group: 'org.testfx',         name: 'testfx-junit5',         version: testfxVersion
+
+    testCompile group: 'org.testfx',         name: 'openjfx-monocle',       version: '8u76-b04'
+}
+
+test {
+    useJUnitPlatform()
+
+    if (project.hasProperty("skipGuiTests")) {
+        exclude 'de/sebdas/Click*'
+    }
+//    if (!project.hasProperty("noHeadless")) {
+//        jvmArgs "-Dheadless=true"
+//    }
+}
+
+junitPlatform {
+    enableStandardTestTask true
+}
